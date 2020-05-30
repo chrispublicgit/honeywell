@@ -12,6 +12,8 @@
         <appender-ref ref="STDOUT" />
     </root>
 
+    <logger name="com.stubbornjava" level="INFO" />
+
     <logger name="honeywell" level="INFO" />
 
 </configuration>

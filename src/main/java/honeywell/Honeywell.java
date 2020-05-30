@@ -3,6 +3,7 @@ package honeywell;
 import com.typesafe.config.Config;
 import disparse.discord.jda.Dispatcher;
 import honeywell.injectable.Injectables;
+import honeywell.middleware.CommandFrequencyMiddleware;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ public class Honeywell {
             .description(description)
             .prefix(prefix)
             .pageLimit(pageLimit)
+            .withMiddleware(Injectables.injectCommandFrequencyMiddleware())
             .build();
 
     JDA jda = Dispatcher.init(new JDABuilder(), dispatcher)

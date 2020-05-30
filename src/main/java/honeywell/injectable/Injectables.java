@@ -3,8 +3,11 @@ package honeywell.injectable;
 import com.stubbornjava.common.Configs;
 import com.typesafe.config.Config;
 import disparse.parser.reflection.Injectable;
+import honeywell.middleware.CommandFrequencyMiddleware;
 
 public class Injectables {
+
+    private static CommandFrequencyMiddleware commandFrequencyMiddleware = new CommandFrequencyMiddleware();
 
     /**
      *
@@ -20,5 +23,10 @@ public class Injectables {
                 .withSystemEnvironment()
                 .withResource("honeywell.conf")
                 .build();
+    }
+
+    @Injectable
+    public static CommandFrequencyMiddleware injectCommandFrequencyMiddleware() {
+        return commandFrequencyMiddleware;
     }
 }

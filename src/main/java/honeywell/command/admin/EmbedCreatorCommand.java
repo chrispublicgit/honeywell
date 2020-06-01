@@ -16,9 +16,12 @@ import java.util.Map;
 
 public class EmbedCreatorCommand {
 
-  private static Map<String, EmbedBuilder> embedBuilderMap = new HashMap<>();
+  private static final Map<String, EmbedBuilder> embedBuilderMap = new HashMap<>();
 
-  @CommandHandler(commandName = "admin.embedhelper", description = "utility command to help create embeds", acceptFrom = IncomingScope.DM)
+  @CommandHandler(
+      commandName = "admin.embedhelper",
+      description = "utility command to help create embeds",
+      acceptFrom = IncomingScope.DM)
   public void embedHelper(MessageReceivedEvent event, Dispatcher dispatcher, EmbedHelperOpts opts) {
     String userId = dispatcher.identityFromEvent(event);
 
@@ -41,8 +44,12 @@ public class EmbedCreatorCommand {
     if (opts.imageUrl != null) builder.setImage(opts.imageUrl);
   }
 
-  @CommandHandler(commandName = "admin.embedhelper.addfield", description = "add field to your current embed", acceptFrom = IncomingScope.DM)
-  public void embedHelperAddField(MessageReceivedEvent event, Dispatcher dispatcher, FieldOpts opts) {
+  @CommandHandler(
+      commandName = "admin.embedhelper.addfield",
+      description = "add field to your current embed",
+      acceptFrom = IncomingScope.DM)
+  public void embedHelperAddField(
+      MessageReceivedEvent event, Dispatcher dispatcher, FieldOpts opts) {
     String userId = dispatcher.identityFromEvent(event);
     embedBuilderMap.putIfAbsent(userId, new EmbedBuilder());
 
@@ -61,8 +68,12 @@ public class EmbedCreatorCommand {
     builder.addField(opts.key, opts.value, opts.inline);
   }
 
-  @CommandHandler(commandName = "admin.embedhelper.deletefield", description = "delete field from current embed", acceptFrom = IncomingScope.DM)
-  public void embedHelperDeleteField(MessageReceivedEvent event, Dispatcher dispatcher, RemoveOpts opts) {
+  @CommandHandler(
+      commandName = "admin.embedhelper.deletefield",
+      description = "delete field from current embed",
+      acceptFrom = IncomingScope.DM)
+  public void embedHelperDeleteField(
+      MessageReceivedEvent event, Dispatcher dispatcher, RemoveOpts opts) {
     String userId = dispatcher.identityFromEvent(event);
     embedBuilderMap.putIfAbsent(userId, new EmbedBuilder());
 
@@ -70,13 +81,19 @@ public class EmbedCreatorCommand {
 
     List<MessageEmbed.Field> fields = builder.getFields();
 
-    opts.numbers.stream().map(Integer::valueOf).map(i -> i - 1).mapToInt(Integer::intValue).forEach(i -> {
-      if (fields.size() > i) builder.getFields().remove(i);
-    });
-
+    opts.numbers.stream()
+        .map(Integer::valueOf)
+        .map(i -> i - 1)
+        .mapToInt(Integer::intValue)
+        .filter(i -> i >= fields.size() || i < 0)
+        .mapToObj(fields::get)
+        .forEach(fields::remove);
   }
 
-  @CommandHandler(commandName = "admin.embedhelper.show", description = "show your current embed", acceptFrom = IncomingScope.DM)
+  @CommandHandler(
+      commandName = "admin.embedhelper.show",
+      description = "show your current embed",
+      acceptFrom = IncomingScope.DM)
   public EmbedBuilder embedHelperShow(MessageReceivedEvent event, Dispatcher dispatcher) {
     String userId = dispatcher.identityFromEvent(event);
     return embedBuilderMap.getOrDefault(userId, new EmbedBuilder());
@@ -120,7 +137,10 @@ public class EmbedCreatorCommand {
 
   @ParsedEntity
   private static class RemoveOpts {
-    @Flag(shortName = 'n', longName = "number", description = "what field number to delete starting at 1")
+    @Flag(
+        shortName = 'n',
+        longName = "number",
+        description = "what field number to delete starting at 1")
     List<String> numbers = new ArrayList<>();
   }
 }
